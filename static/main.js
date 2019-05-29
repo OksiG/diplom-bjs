@@ -6,7 +6,11 @@ class Profile {
         this.password = password;
     }
 
-    createUser(this.username, name, this.password , callback) {
+    createUser(username, name, password, callback) {
+        let users = [];
+        if (this.username === undefined) {
+            users.push(username, name, password);
+        }
         return ApiConnector.createUser( , (err, data) => {
             console.log(`Adding ${this.username}. Welcome!`);
             callback(err, data);
@@ -14,7 +18,13 @@ class Profile {
     }
 
     authorization() {
-
+        let foundUser;
+        for (let i = 0; i < users.length; i++) {//имя пользователя и логин есть, то поприветствуем, если нет, то отправим на регистрацию
+            let u = users[i];
+            if (u.username === && u.password ===) {
+                foundUser = u.username;
+            } else ()
+        }
     }
 
     addMoney({ currency, amount }, callback) {
