@@ -1,30 +1,23 @@
 class Profile {
-    constructor(username, name, password) {
+    constructor(username, name: { firstName, lastName }, password) {
         this.username = username;
         this.firstName = name.firstName;
         this.lastName = name.lastName;
         this.password = password;
     }
 
-    createUser(username, name, password, callback) {
-        let users = [];
-        if (this.username === undefined) {
-            users.push(username, name, password);
-        }
-        return ApiConnector.createUser( , (err, data) => {
-            console.log(`Adding ${this.username}. Welcome!`);
+    createUser(callback) {
+        return ApiConnector.createUser((err, data) => {
+            console.log(`Creating user ${this.username}`);
             callback(err, data);
         });
     }
 
-    authorization() {
-        let foundUser;
-        for (let i = 0; i < users.length; i++) {//имя пользователя и логин есть, то поприветствуем, если нет, то отправим на регистрацию
-            let u = users[i];
-            if (u.username === && u.password ===) {
-                foundUser = u.username;
-            } else ()
-        }
+    performLogin(callback) {
+        return ApiConnector.performLogin((err, data) => {
+            console.log(`Authorizing user ${this.username}`);
+            callback(err, data);
+        });
     }
 
     addMoney({ currency, amount }, callback) {
@@ -35,10 +28,26 @@ class Profile {
     }
 
     convertMoney({ fromCurrency, targetCurrency, targetAmount }, callback) {
+        return ApiConnector.convertMoney({ fromCurrency, targetCurrency, targetAmount }, (err, data) => {
+            console.log(`Converting ${fromCurrency} to ${targetAmount} ${targetCurrency}`);
+            callback(err, data);
+        });
+    }
 
-    };
+    transferMoney({ to, amount }, callback) {
+        return ApiConnector.addMoney({ to, amount }, (err, data) => {
+            console.log(`Transfering ${amount} to ${to}`);
+            callback(err, data);
+        });
+    }
 }
 
-const log = new Profile('login', {firstNname: 'name', lastName: 'surname'}, 'pass');
+function main() {
+    const Ivan = new Profile('ivan', {firstNname: 'Ivan', lastName: 'Chernyshev'}, 'ivanpass');
+    const Ira = new Profile('ira', {firstNname: 'Ira', lastName: 'Syzikh'}, 'irapass');
 
-console.log(log);
+    Ivan.createUser()
+}
+
+main();
+
