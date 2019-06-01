@@ -42,11 +42,29 @@ class Profile {
     }
 }
 
+function getCourse() {
+    let exchangeRate = [];
+    let unitExchangeRate = ApiConnector.getStocks((err, data) => {
+        callback(err, data);
+    exchangeRate.push(unitExchangeRate);
+    return exchangeRate;
+    });
+}
+
 function main() {
     const Ivan = new Profile('ivan', {firstNname: 'Ivan', lastName: 'Chernyshev'}, 'ivanpass');
     const Ira = new Profile('ira', {firstNname: 'Ira', lastName: 'Syzikh'}, 'irapass');
 
-    Ivan.createUser()
+    Ivan.createUser();
+    
+    Ivan.performLogin();
+
+    Ivan.addMoney({ currency: 'RUB', amount: 100 }, (err, data) => {
+        if (err) {
+                console.error('Error during adding money to Ivan');
+        } else {
+                console.log(`Added 500000 euros to Ivan`);
+        });
 }
 
 main();
