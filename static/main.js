@@ -55,6 +55,14 @@ function main() {
     const Ivan = new Profile('ivan', {firstNname: 'Ivan', lastName: 'Chernyshev'}, 'ivanpass');
     const Ira = new Profile('ira', {firstNname: 'Ira', lastName: 'Syzikh'}, 'irapass');
 
+    getStocks((err, data) => {
+        if (err) {
+                console.error('Error during getting stocks');
+                throw err;
+        }
+        const stocksInfo = data;
+    });
+
     Ivan.createUser( Ivan, (err, data) => {
         if (err) {
             console.error(`Error creating new user ${Ivan.username}`);
@@ -77,14 +85,17 @@ function main() {
         } else {
                 console.log(`Added 500000 euros to Ivan`);
         });
+
+    const targetAmount = stocksInfo['RUB_NETCOIN'] * amount;
+
+    Ivan.convertMoney({ fromCurrency: currency, targetCurrency: 'NETCOIN', targetAmount}, (err, data) => {
+        if (err) {
+            console.error(`Error converting money  from ${fromCurrency} to ${targetCurrency}`);
+        } else {
+            console.log(`Money successfully converted from ${fromCurrency} to ${targetAmount} ${targetCurrency}`);
+        }
+    });
 }
 
 main();
 
-getStocks((err, data) => {
-	if (err) {
-			console.error('Error during getting stocks');
-			throw err;
-	}
-	const stocksInfo = data;
-});
