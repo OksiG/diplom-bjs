@@ -1,8 +1,10 @@
 class Profile {
-    constructor(username, name: { firstName, lastName }, password) {
+    constructor({username, name: { firstName, lastName }, password}) {
         this.username = username;
-        this.firstName = name.firstName;
-        this.lastName = name.lastName;
+        this.name = {
+            firstName,
+            lastName
+        };
         this.password = password;
     }
 
@@ -42,12 +44,10 @@ class Profile {
     }
 }
 
-function getCourse() {
-    let exchangeRate = [];
-    let unitExchangeRate = ApiConnector.getStocks((err, data) => {
-        callback(err, data);
-    exchangeRate.push(unitExchangeRate);
-    return exchangeRate;
+function getStocks(callback) {
+    return ApiConnector.getStocks((err, data) => {
+        console.log(`Getting stocks info`);
+        callback(err, data[99]);
     });
 }
 
@@ -55,9 +55,21 @@ function main() {
     const Ivan = new Profile('ivan', {firstNname: 'Ivan', lastName: 'Chernyshev'}, 'ivanpass');
     const Ira = new Profile('ira', {firstNname: 'Ira', lastName: 'Syzikh'}, 'irapass');
 
-    Ivan.createUser();
+    Ivan.createUser( Ivan, (err, data) => {
+        if (err) {
+            console.error(`Error creating new user ${Ivan.username}`);
+        } else {
+            console.log(`New user ${Ivan.username} successfully created`);
+        }
+    });
     
-    Ivan.performLogin();
+    Ivan.performLogin({username: Ivan.username, password: Ivan.password}, (err, data) => {
+        if (err) {
+            console.error(`Error authorization failed ${Ivan.username}`);
+        } else {
+            console.log(`User ${Ivan.username} successfully authorization`);
+        }
+    });
 
     Ivan.addMoney({ currency: 'RUB', amount: 100 }, (err, data) => {
         if (err) {
@@ -69,3 +81,10 @@ function main() {
 
 main();
 
+getStocks((err, data) => {
+	if (err) {
+			console.error('Error during getting stocks');
+			throw err;
+	}
+	const stocksInfo = data;
+});
