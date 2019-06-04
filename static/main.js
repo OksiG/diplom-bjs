@@ -8,15 +8,15 @@ class Profile {
         this.password = password;
     }
 
-    createUser(callback) {
-        return ApiConnector.createUser((err, data) => {
+    createUser({username, name: { firstName, lastName }, password}, callback) {
+        return ApiConnector.createUser({username, name: { firstName, lastName }, password}, (err, data) => {
             console.log(`Creating user ${this.username}`);
             callback(err, data);
         });
     }
 
-    performLogin(callback) {
-        return ApiConnector.performLogin((err, data) => {
+    performLogin({ username, password }, callback) {
+        return ApiConnector.performLogin({ username, password }, (err, data) => {
             console.log(`Authorizing user ${this.username}`);
             callback(err, data);
         });
