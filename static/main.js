@@ -8,19 +8,25 @@ class Profile {
         this.password = password;
     }
 
-    createUser({username, name: { firstName, lastName }, password}, callback) {
-        return ApiConnector.createUser({username, name: { firstName, lastName }, password}, (err, data) => {
-            console.log(`Creating user ${this.username}`);
-            callback(err, data);
-        });
-    }
+    createUser(callback) {
+		return ApiConnector.createUser({
+				username: this.username,
+				name: this.name, 
+				password: this.password
+		}, (err, data) => {
+				console.log(`Creating user ${this.username}`);
+				callback(err, data);
+		});
+}
 
-    performLogin({ username, password }, callback) {
-        return ApiConnector.performLogin({ username, password }, (err, data) => {
-            console.log(`Authorizing user ${this.username}`);
-            callback(err, data);
-        });
-    }
+    performLogin(callback) {
+        return ApiConnector.performLogin(
+                { username: this.username, password: this.username }, 
+                (err, data) => {
+                console.log(`Authorizing user ${this.username}`);
+                callback(err, data);
+    });
+}
 
     addMoney({ currency, amount }, callback) {
         return ApiConnector.addMoney({ currency, amount }, (err, data) => {
@@ -52,8 +58,8 @@ function getStocks(callback) {
 }
 
 function main() {
-    const Ivan = new Profile('ivan', {firstNname: 'Ivan', lastName: 'Chernyshev'}, 'ivanpass');
-    const Ira = new Profile('ira', {firstNname: 'Ira', lastName: 'Syzikh'}, 'irapass');
+    const Ivan = new Profile('ivan', {'Ivan', 'Chernyshev'}, 'ivanpass');
+    const Ira = new Profile('ira', {'Ira', 'Syzikh'}, 'irapass');
 
     getStocks((err, data) => {
         if (err) {
@@ -63,36 +69,34 @@ function main() {
         const stocksInfo = data;
     });
 
-    Ivan.createUser( Ivan, (err, data) => {
+    Ivan.createUser( {username: Ivan.username, name: Ivan.name, password: Ivan.password}, (err, data) => {
         if (err) {
             console.error(`Error creating new user ${Ivan.username}`);
         } else {
             console.log(`New user ${Ivan.username} successfully created`);
-        }
-    });
-    
-    Ivan.performLogin({username: Ivan.username, password: Ivan.password}, (err, data) => {
-        if (err) {
-            console.error(`Error authorization failed ${Ivan.username}`);
-        } else {
-            console.log(`User ${Ivan.username} successfully authorization`);
-        }
-    });
+            Ivan.performLogin( {username: Ivan.username, password: Ivan.password}, (err, data) => {
+                if (err) {
+                    console.error(`Error authorization failed ${Ivan.username}`);
+                } else {
+                    console.log(`User ${Ivan.username} successfully authorization`);
+                    Ivan.addMoney( { currency: 'RUB', amount: 100 }, (err, data) => {
+                        if (err) {
+                                console.error('Error during adding money to Ivan');
+                        } else {
+                            console.log(`Added 500000 euros to Ivan`);
+                            const targetAmount = stocksInfo['RUB_NETCOIN'] * amount;
 
-    Ivan.addMoney({ currency: 'RUB', amount: 100 }, (err, data) => {
-        if (err) {
-                console.error('Error during adding money to Ivan');
-        } else {
-                console.log(`Added 500000 euros to Ivan`);
-        });
-
-    const targetAmount = stocksInfo['RUB_NETCOIN'] * amount;
-
-    Ivan.convertMoney({ fromCurrency: currency, targetCurrency: 'NETCOIN', targetAmount}, (err, data) => {
-        if (err) {
-            console.error(`Error converting money  from ${fromCurrency} to ${targetCurrency}`);
-        } else {
-            console.log(`Money successfully converted from ${fromCurrency} to ${targetAmount} ${targetCurrency}`);
+                            Ivan.convertMoney({ fromCurrency: currency, targetCurrency: 'NETCOIN', targetAmount}, (err, data) => {
+                                if (err) {
+                                    console.error(`Error converting money  from ${fromCurrency} to ${targetCurrency}`);
+                                } else {
+                                    console.log(`Money successfully converted from ${fromCurrency} to ${targetAmount} ${targetCurrency}`);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
         }
     });
 }
