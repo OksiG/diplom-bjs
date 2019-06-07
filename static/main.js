@@ -58,8 +58,17 @@ function getStocks(callback) {
 }
 
 function main() {
-    const Ivan = new Profile('ivan', {'Ivan', 'Chernyshev'}, 'ivanpass');
-    const Ira = new Profile('ira', {'Ira', 'Syzikh'}, 'irapass');
+    const Ivan = new Profile({
+        username: 'ivan',
+        name: { firstName: 'Ivan', lastName: 'Chernyshev' },
+        password: 'ivanspass',
+    });
+    
+    const Ivan = new Profile({
+        username: 'ira',
+        name: { firstName: 'Ira', lastName: 'Syzikh' },
+        password: 'irapass',
+    });
 
     getStocks((err, data) => {
         if (err) {
