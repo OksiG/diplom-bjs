@@ -8,7 +8,7 @@ class Profile {
         this.password = password;
     }
 
-    createUser(callback) {
+    createUser({ username, name, password }, callback) {
 		return ApiConnector.createUser({
 				username: this.username,
 				name: this.name, 
@@ -19,7 +19,7 @@ class Profile {
 		});
 }
 
-    performLogin(callback) {
+    performLogin({ username, password }, callback) {
         return ApiConnector.performLogin(
                 { username: this.username, password: this.username }, 
                 (err, data) => {
@@ -57,6 +57,8 @@ function getStocks(callback) {
     });
 }
 
+let stocksInfo;
+
 function main() {
     const Ivan = new Profile({
         username: 'ivan',
@@ -64,7 +66,7 @@ function main() {
         password: 'ivanspass',
     });
     
-    const Ivan = new Profile({
+    const Ira = new Profile({
         username: 'ira',
         name: { firstName: 'Ira', lastName: 'Syzikh' },
         password: 'irapass',
@@ -75,7 +77,7 @@ function main() {
                 console.error('Error during getting stocks');
                 throw err;
         }
-        const stocksInfo = data;
+        stocksInfo = data;
     });
 
     Ivan.createUser( {username: Ivan.username, name: Ivan.name, password: Ivan.password}, (err, data) => {
@@ -95,7 +97,7 @@ function main() {
                             console.log(`Added 500000 euros to Ivan`);
                             const targetAmount = stocksInfo['RUB_NETCOIN'] * amount;
 
-                            Ivan.convertMoney({ fromCurrency: currency, targetCurrency: 'NETCOIN', targetAmount}, (err, data) => {
+                            Ivan.convertMoney({ fromCurrency: 'RUB', targetCurrency: 'NETCOIN', targetAmount}, (err, data) => {
                                 if (err) {
                                     console.error(`Error converting money  from ${fromCurrency} to ${targetCurrency}`);
                                 } else {
