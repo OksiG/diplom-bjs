@@ -8,7 +8,7 @@ class Profile {
         this.password = password;
     }
 
-    createUser({ username, name, password }, callback) {
+    createUser(callback) {
 		return ApiConnector.createUser({
 				username: this.username,
 				name: this.name, 
@@ -19,7 +19,7 @@ class Profile {
 		});
 }
 
-    performLogin({ username, password }, callback) {
+    performLogin(callback) {
         return ApiConnector.performLogin(
                 { username: this.username, password: this.username }, 
                 (err, data) => {
@@ -43,7 +43,7 @@ class Profile {
     }
 
     transferMoney({ to, amount }, callback) {
-        return ApiConnector.addMoney({ to, amount }, (err, data) => {
+        return ApiConnector.transferMoney({ to, amount }, (err, data) => {
             console.log(`Transfering ${amount} to ${to}`);
             callback(err, data);
         });
@@ -80,12 +80,12 @@ function main() {
         stocksInfo = data;
     });
 
-    Ivan.createUser( {username: Ivan.username, name: Ivan.name, password: Ivan.password}, (err, data) => {
+    Ivan.createUser((err, data) => {
         if (err) {
             console.error(`Error creating new user ${Ivan.username}`);
         } else {
             console.log(`New user ${Ivan.username} successfully created`);
-            Ivan.performLogin( {username: Ivan.username, password: Ivan.password}, (err, data) => {
+            Ivan.performLogin((err, data) => {
                 if (err) {
                     console.error(`Error authorization failed ${Ivan.username}`);
                 } else {
@@ -95,13 +95,13 @@ function main() {
                                 console.error('Error during adding money to Ivan');
                         } else {
                             console.log(`Added 500000 euros to Ivan`);
-                            const targetAmount = stocksInfo['RUB_NETCOIN'] * amount;
+                            const targetAmount = stocksInfo['RUB_NETCOIN'] * this.amount;
 
                             Ivan.convertMoney({ fromCurrency: 'RUB', targetCurrency: 'NETCOIN', targetAmount}, (err, data) => {
                                 if (err) {
-                                    console.error(`Error converting money  from ${fromCurrency} to ${targetCurrency}`);
+                                    console.error(`Error converting money  from ${this.fromCurrency} to ${this.targetCurrency}`);
                                 } else {
-                                    console.log(`Money successfully converted from ${fromCurrency} to ${targetAmount} ${targetCurrency}`);
+                                    console.log(`Money successfully converted from ${this.fromCurrency} to ${this.targetAmount} ${this.targetCurrency}`);
                                 }
                             });
                         }
