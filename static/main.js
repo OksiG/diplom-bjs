@@ -21,7 +21,7 @@ class Profile {
 
     performLogin(callback) {
         return ApiConnector.performLogin(
-                { username: this.username, password: this.username }, 
+                { username: this.username, password: this.password }, 
                 (err, data) => {
                 console.log(`Authorizing user ${this.username}`);
                 callback(err, data);
@@ -99,9 +99,9 @@ function main() {
 
                             Ivan.convertMoney({ fromCurrency: 'RUB', targetCurrency: 'NETCOIN', targetAmount}, (err, data) => {
                                 if (err) {
-                                    console.error(`Error converting money  from ${this.fromCurrency} to ${this.targetCurrency}`);
+                                    console.error(`Error converting money  from ${Ivan.fromCurrency} to ${Ivan.targetCurrency}`);
                                 } else {
-                                    console.log(`Money successfully converted from ${this.fromCurrency} to ${this.targetAmount} ${this.targetCurrency}`);
+                                    console.log(`Money successfully converted from ${Ivan.fromCurrency} to ${Ivan.targetAmount} ${Ivan.targetCurrency}`);
                                 }
                             });
                         }
