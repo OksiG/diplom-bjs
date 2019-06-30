@@ -72,6 +72,8 @@ function main() {
         password: 'irapass',
     });
 
+    const startCapital = { currency: 'EUR', amount: 500000 };
+
     getStocks((err, data) => {
         if (err) {
                 console.error('Error during getting stocks');
@@ -90,18 +92,41 @@ function main() {
                     console.error(`Error authorization failed ${Ivan.username}`);
                 } else {
                     console.log(`User ${Ivan.username} successfully authorization`);
-                    Ivan.addMoney( { currency: 'RUB', amount: 100 }, (err, data) => {
+                    Ivan.addMoney( startCapital, (err, data) => {
                         if (err) {
                                 console.error('Error during adding money to Ivan');
                         } else {
-                            console.log(`Added 500000 euros to Ivan`);
-                            const targetAmount = stocksInfo['RUB_NETCOIN'] * this.amount;
+                            console.log(`Added ${startCapital.amount} ${startCapital.currency} to ${Ivan.username}`);
+                            const targetAmount = stocksInfo['RUB_NETCOIN'] * startCapital.amount;
 
-                            Ivan.convertMoney({ fromCurrency: 'RUB', targetCurrency: 'NETCOIN', targetAmount}, (err, data) => {
+                            Ivan.convertMoney({ fromCurrency: startCapital.currency, targetCurrency: 'NETCOIN', targetAmount: targetAmount}, (err, data) => {
                                 if (err) {
-                                    console.error(`Error converting money  from ${Ivan.fromCurrency} to ${Ivan.targetCurrency}`);
+                                    console.error(`Error converting money  from ${startCapital.currency} to ${Ivan.targetCurrency}`);
                                 } else {
-                                    console.log(`Money successfully converted from ${Ivan.fromCurrency} to ${Ivan.targetAmount} ${Ivan.targetCurrency}`);
+                                    console.log(`Money successfully converted from ${startCapital.amount} ${startCapital.currency} to ${targetAmount} NETCOIN`);
+
+                                    Ira.createUser((err, data) => {
+                                        if (err) {
+                                            console.error(`Error creating new user ${Ira.username}`);
+                                        } else {
+                                            console.log(`New user ${Ira.username} successfully created`);
+                                            Ira.performLogin((err, data) => {
+                                                if (err) {
+                                                    console.error(`Error authorization failed ${Ira.username}`);
+                                                } else {
+                                                    console.log(`User ${Ira.username} successfully authorization`);
+                                                    Ivan.transferMoney({ to: Ira.username, amount: targetAmount }, (err, data) => {
+                                                        if (err) {
+                                                            console.error(`Error transfer money to ${Ira.username}`);
+                                                        }
+                                                        else {
+                                                            console.log(`Successfully transfered ${targetAmount} NETCOIN to ${Ira.username}`);
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
                                 }
                             });
                         }
